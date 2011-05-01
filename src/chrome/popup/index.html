@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+	<head>
+		<style>
+		body {
+		  min-width:357px;
+		  overflow-x:hidden;
+		}
+
+		img {
+		  margin:5px;
+		  border:2px solid black;
+		  vertical-align:middle;
+		  width:75px;
+		  height:75px;
+		}
+		</style>
+	</head>
+	<body>
+		<h1>Payment API simulator</h1>
+		<div id="payment-msg"></div>
+
+		<script>
+			var messageNode = document.getElementById('payment-msg');
+			messageNode.innerText = 'Message: ';
+			chrome.extension.onConnect.addListener(function(port) {
+				port.onMessage.addListener(function(msg) {
+					alert('got message');
+					var notification = webkitNotifications.createNotification(
+						'Hello!',  // notification title
+						'Lorem ipsum...'  // notification body text
+					);
+
+					// Then show the notification.
+					notification.show();
+					messageNode.innerText = msg;
+				});
+			});
+
+
+		</script>
+
+	</body>
+</html>

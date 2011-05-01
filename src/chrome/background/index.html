@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+	<script>
+		chrome.tabs.onUpdated.addListener(function(id, changeInfo, tab){
+			if (tab.status == 'complete'){
+				var port = chrome.tabs.connect(id);
+				port.onMessage.addListener(function(obj){
+					(webkitNotifications.createHTMLNotification(
+						'notification.html?' + encodeURIComponent('amount=' + obj.amount + '&id=' + obj.id + '&description=' + obj.description)
+					)).show();
+				});
+
+				window.notify = function(err, obj){
+					var obj = {
+						success: !!err,
+						transaction: obj
+					};
+					port.postMessage(obj);
+				}
+			}
+		});
+
+	</script>
+</html>

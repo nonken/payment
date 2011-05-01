@@ -1,0 +1,25 @@
+{
+  	"name": "Payment APIs",
+	"version": "1.0",
+	"description": "Payment APIs in your browser",
+	"icons": {
+           "16": "assets/icon16.png",
+           "48": "assets/icon48.png",
+           "128": "assets/icon128.png"
+	},
+	"browser_action": {
+		"default_icon": "assets/icon48.png",
+		"popup": "popup/index.html"
+	},
+	"background_page": "background/index.html",
+	"permissions": [
+		"http://api.flickr.com/",
+		"notifications",
+		"tabs"
+	],
+	"content_scripts": [{
+		"matches": ["*://*/*"],
+		"js": ["content/extension.js"]
+    }]
+}
+
