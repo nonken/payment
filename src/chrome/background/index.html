@@ -2,12 +2,29 @@
 <html>
 	<script>
 		chrome.tabs.onUpdated.addListener(function(id, changeInfo, tab){
+			/* Mock data */
+			var paid = {
+				'fyrjklshu49e8feh9ryeug9wg': true
+			};
+
 			if (tab.status == 'complete'){
 				var port = chrome.tabs.connect(id);
 				port.onMessage.addListener(function(obj){
-					(webkitNotifications.createHTMLNotification(
-						'notification.html?' + encodeURIComponent('amount=' + obj.amount + '&id=' + obj.id + '&description=' + obj.description)
-					)).show();
+					switch (obj.type){
+						case 'make':
+							(webkitNotifications.createHTMLNotification(
+								'notification.html?data=' + encodeURIComponent(JSON.stringify(obj))
+							)).show();
+							break;
+						case 'made':
+							// Pseudo Check for payments here
+							if (paid[obj.obj.item]){
+								notify(true, obj);
+							}else{
+								notify(false, obj);
+							}
+							break;
+					}
 				});
 
 				window.notify = function(err, obj){
@@ -15,6 +32,7 @@
 						success: !!err,
 						transaction: obj
 					};
+
 					port.postMessage(obj);
 				}
 			}

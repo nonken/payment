@@ -5,15 +5,34 @@
 		callbacks = {},
 		body = document.body,
 		payment = global.navigator.payment = {
-			pay: function(amount, description, callb){
-				var id = +new Date(); // pseudo unique
-				sendPayment({
-					amount: amount,
-					description: description,
-					id: id
-				});
+			make: function(obj, callb){
+				if (verified('make', obj)){
+					var id = +new Date(); // pseudo unique
+					pass({
+						type: 'make',
+						obj: obj,
+						id: id
+					});
+					callbacks[id] = callb;
+				}
+			},
+			made: function(obj, callb){
+				if (verified('made', obj)){
+					// TODO: factor out double new Dates and stuff.
+					var id = +new Date(); // pseudo unique
+					pass({
+						type: 'made',
+						obj: obj,
+						id: id
+					});
+					callbacks[id] = callb;
+				}
+			},
+			subscribe: function(){
 
-				callbacks[id] = callb;
+			},
+			subscribed: function(){
+
 			}
 		}
 	;
@@ -22,9 +41,34 @@
 	var paymentEvent = document.createEvent('Event');
 	paymentEvent.initEvent('payment', true, true);
 
-	function sendPayment(obj) {
+	function pass(obj) {
 		paymentPort.innerText = JSON.stringify(obj || {});
 		paymentPort.dispatchEvent(paymentEvent);
+	}
+
+	function verified(type, obj){
+		function verify(arr){
+			if (typeof obj === 'undefined'){
+				throw new Error('No payment info provided');
+				return false;
+			}
+
+			arr.forEach(function(key){
+				if (!obj[key]){
+					throw new Error('Property ' + key + ' is required for payment processing/checking');
+					return false;
+				}
+			});
+			return true;
+		}
+
+		switch (type){
+			case 'make':
+				return verify(['amount', 'description', 'item']);
+			case 'made':
+				return verify(['item']);
+		}
+		return false;
 	}
 
 	var paymentPort = document.createElement('div');
@@ -43,7 +87,6 @@
 			data = JSON.parse(this.innerText),
 			callbId = data.transaction.id
 		;
-
 		callbacks[callbId] && callbacks[callbId](!data.success, data.transaction);
 	});
 

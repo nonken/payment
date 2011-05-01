@@ -7,26 +7,19 @@
 	<script>
 		// Some payment magic happens here!!
 		var
-			params = decodeURIComponent(window.location.href).split('?')[1].split('&'), // MWUAHAHA
-			obj = {},
-			tmp,
-			dispatch = function(bool){
-				chrome.extension.getBackgroundPage().notify(bool, obj);
+			params = JSON.parse(decodeURIComponent(window.location.href).split('?')[1].split('data=')[1]), // HACK
+			dispatch = function(bool, params){
+				chrome.extension.getBackgroundPage().notify(bool, params);
 				window.close();
 			}
 		;
 
-		params.forEach(function(param){
-			tmp = param.split('=');
-			obj[tmp[0]] = tmp[1];
-		});
-
 		document.getElementById('confirm').addEventListener('click', function(){
-			dispatch(true);
+			dispatch(true, params);
 		});
 
 		document.getElementById('deny').addEventListener('click', function(){
-			dispatch(false);
+			dispatch(false, params);
 		});
 	</script>
 </html>

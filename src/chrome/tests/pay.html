@@ -10,26 +10,53 @@
 	</head>
 	<body onload="init()">
 		<button id="pay">Pay for this item</button>
-		<div id="paid" class="display-none">Thanks!</div>
-		<div id="no-access" class="display-none">No access!</div>
+		<button id="paid">Paid for this item?</button>
+		<div id="status-paid" class="display-none">Thanks!</div>
+		<div id="status-no-access" class="display-none">No access!</div>
+		<div id="status-access" class="display-none">You already have access!</div>
 	</body>
 	<script>
 		function init(){
-			document.getElementById("pay").addEventListener('click', function(){
-				var
-					payment = navigator.payment,
-					button = document.getElementById('pay'),
-					paid = document.getElementById('paid'),
-					noAccess = document.getElementById('no-access')
-				;
+			var
+				buttonPay = document.getElementById('pay'),
+				buttonPaid = document.getElementById('paid'),
+				statusPaid = document.getElementById('status-paid'),
+				noAccess = document.getElementById('status-no-access'),
+				access = document.getElementById('status-access'),
+				itemId = 'fyrjklshu49e8feh9ryeug9dwg'
+			;
 
-				payment.pay(12.35, "Payment for product", function(err, data){
+			buttonPay.addEventListener('click', function(){
+				var payment = navigator.payment;
+				payment.make({
+					amount: 12.35,
+					description: "Payment for product",
+					item: itemId
+				},
+				function(err, data){
 					if (err){
 						noAccess.classList.remove('display-none');
-						button.classList.add('display-none');
+						buttonPay.classList.add('display-none');
 					}else{
-						paid.classList.remove('display-none');
-						button.classList.add('display-none');
+						statusPaid.classList.remove('display-none');
+						buttonPay.classList.add('display-none');
+					}
+				});
+			});
+
+			buttonPaid.addEventListener('click', function(){
+				var payment = navigator.payment;
+				payment.made({
+					item: itemId
+				},
+				function(err, data){
+					console.log('callb', arguments);
+					if (err){
+						noAccess.classList.remove('display-none');
+						buttonPaid.classList.add('display-none');
+					}else{
+						access.classList.remove('display-none');
+						buttonPaid.classList.add('display-none');
 					}
 				});
 			});
