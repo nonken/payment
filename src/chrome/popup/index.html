@@ -17,28 +17,7 @@
 		</style>
 	</head>
 	<body>
-		<h1>Payment API simulator</h1>
-		<div id="payment-msg"></div>
-
-		<script>
-			var messageNode = document.getElementById('payment-msg');
-			messageNode.innerText = 'Message: ';
-			chrome.extension.onConnect.addListener(function(port) {
-				port.onMessage.addListener(function(msg) {
-					alert('got message');
-					var notification = webkitNotifications.createNotification(
-						'Hello!',  // notification title
-						'Lorem ipsum...'  // notification body text
-					);
-
-					// Then show the notification.
-					notification.show();
-					messageNode.innerText = msg;
-				});
-			});
-
-
-		</script>
-
+		<h1>Payment API settings</h1>
+		<script></script>
 	</body>
 </html>

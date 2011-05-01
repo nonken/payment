@@ -24,7 +24,6 @@
 				;
 
 				payment.pay(12.35, "Payment for product", function(err, data){
-					console.log(err);
 					if (err){
 						noAccess.classList.remove('display-none');
 						button.classList.add('display-none');
